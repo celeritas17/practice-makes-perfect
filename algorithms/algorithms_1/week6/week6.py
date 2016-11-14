@@ -1,3 +1,5 @@
+from heapq import heappush, heappop
+
 SUM_FILE = '2sum.txt'
 MEDIAN_FILE = 'median.txt'
 
@@ -33,13 +35,51 @@ def two_sums_count(nums, low, high):
 '''
 Return the sum of the len(nums) medians mod 10000
 '''
-def median_sum(nums):
-	pass
+def median_stream_sum(nums):
+	median_sum = nums[0] + nums[1]
+	high_heap = []
+	low_heap = []
+	count = 2
 
+	# initialize high and low heaps
+	heappush(high_heap, max(nums[0], nums[1]))
+	heappush(low_heap, -min(nums[0], nums[1]))
+
+	while count < len(nums):
+		max_low = -low_heap[0]
+		min_high = high_heap[0]
+
+		a = nums[count]
+
+		if a <= max_low:
+			heappush(low_heap, -a)
+		else:
+			heappush(high_heap, a)
+
+		if abs(len(high_heap) - len(low_heap)) > 1:
+			if len(high_heap) > len(low_heap):
+				num = heappop(high_heap)
+				heappush(low_heap, -num)
+			else:
+				num = -heappop(low_heap)
+				heappush(high_heap, num)
+
+		if len(low_heap) > len(high_heap):
+			median = -low_heap[0]
+		if len(high_heap) > len(low_heap):
+			median = high_heap[0]
+		else:
+			median = -low_heap[0]
+
+		median_sum += median
+
+		count += 1
+	
+	return median_sum%10000
 
 if __name__ == '__main__':
 	#nums = load_nums(SUM_FILE)
 	#print(two_sums_count(nums, -10000, 10000)) # 427
 
 	nums = load_nums(MEDIAN_FILE)
-	print(nums[len(nums) - 1])
+	print(median_stream_sum(nums))
