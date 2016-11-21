@@ -41,5 +41,4 @@ if __name__ == '__main__':
 		[0, 1, 1, 0, 0],
 		[1, 0, 1, 0, 1]
 	]
-	print(dfs_loop(matrix))
-	
+	print(dfs_loop(matrix)) # 6
